@@ -2853,7 +2853,7 @@ function sheet_add_aoa(_ws, data, opts) {
 		for(var C = 0; C != data[R].length; ++C) {
 			if(typeof data[R][C] === 'undefined') continue;
 			var cell;
-			if(typeof data[R][C] === 'object' && data[R][C]['v']){
+			if(typeof data[R][C] === 'object' && data[R][C] && data[R][C]['v']){
 				cell = data[R][C];
 			} else {
 				var cell = ({v: data[R][C] });
