@@ -2853,16 +2853,17 @@ function sheet_add_aoa(_ws, data, opts) {
 		for(var C = 0; C != data[R].length; ++C) {
 			if(typeof data[R][C] === 'undefined') continue;
 			var cell;
-			if(typeof data[R][C] === 'object' && data[R][C] && data[R][C]['v']){
-				cell = data[R][C];
-			} else {
-				var cell = ({v: data[R][C] });
-				if(Array.isArray(cell.v)) { cell.f = data[R][C][1]; cell.v = cell.v[0]; }
-				var __R = _R + R, __C = _C + C;
-				if(range.s.r > __R) range.s.r = __R;
-				if(range.s.c > __C) range.s.c = __C;
-				if(range.e.r < __R) range.e.r = __R;
-				if(range.e.c < __C) range.e.c = __C;
+			if(typeof data[R][C] === 'object' && data[R][C] && data[R][C]['v']){ cell = data[R][C]; } 
+			else { cell = ({v: data[R][C] }); }
+
+			if(Array.isArray(cell.v)) { cell.f = data[R][C][1]; cell.v = cell.v[0]; }
+			var __R = _R + R, __C = _C + C;
+			if(range.s.r > __R) range.s.r = __R;
+			if(range.s.c > __C) range.s.c = __C;
+			if(range.e.r < __R) range.e.r = __R;
+			if(range.e.c < __C) range.e.c = __C;
+
+			if(!cell.t) {
 				if(cell.v === null) { if(cell.f) cell.t = 'n'; else if(!o.cellStubs) continue; else cell.t = 'z'; }
 				else if(typeof cell.v === 'number') cell.t = 'n';
 				else if(typeof cell.v === 'boolean') cell.t = 'b';
@@ -2873,6 +2874,7 @@ function sheet_add_aoa(_ws, data, opts) {
 				}
 				else cell.t = 's';
 			}
+			
 			if(dense) {
 				if(!ws[__R]) ws[__R] = [];
 				ws[__R][__C] = cell;
@@ -8270,7 +8272,10 @@ function write_sty_xml(wb, opts) {
 	var o = [XML_HEADER, STYLES_XML_ROOT], w;
 	if(wb.SSF && (w = write_numFmts(wb.SSF)) != null) o[o.length] = w;
 	// o[o.length] = ('<fonts count="1"><font><sz val="12"/><color theme="1"/><name val="Calibri"/><family val="2"/><scheme val="minor"/></font></fonts>');
-	o[o.length] = ('<fonts count="2"><font><sz val="12"/><color theme="1"/><name val="Calibri"/><family val="2"/><scheme val="minor"/></font><font><b/><sz val="12"/><color theme="1"/><name val="Calibri"/><family val="2"/><scheme val="minor"/></font></fonts>');
+	o[o.length] = ('<fonts count="2">'
+		+'<font><sz val="12"/><color theme="1"/><name val="Calibri"/><family val="2"/><scheme val="minor"/></font>'
+		+'<font><b/><sz val="12"/><color theme="1"/><name val="Calibri"/><family val="2"/><scheme val="minor"/></font>'
+		+'</fonts>');
 
 	o[o.length] = ('<fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills>');
 	o[o.length] = ('<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>');
